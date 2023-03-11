@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: volume-daemonset
+  labels:
+    app: main2
+spec:
+  selector:
+    matchLabels:
+      app: main2
+  template:
+    metadata:
+      labels:
+        app: main2
+    spec:
+      containers:
+      - name: network-multitool
+        image: wbitt/network-multitool
+        volumeMounts:
+        - name: vol-noda
+          mountPath: /output
+        env:
+        - name: HTTP_PORT
+          value: "80"
+        - name: HTTPS_PORT
+          value: "443"
+        ports:
+        - containerPort: 80
+          name: http-port
+        - containerPort: 443
+          name: https-port
+        resources:
+          requests:
+            cpu: "1m"
+            memory: "20Mi"
+          limits:
+            cpu: "10m"
+            memory: "20Mi"
+      volumes:
+      - name: vol-noda
+        hostPath:
+          path: /var/log
